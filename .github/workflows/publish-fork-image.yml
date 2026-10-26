@@ -3,7 +3,7 @@ name: Publish fork Docker image
 on:
   push:
     branches:
-      - 'node-24.22.1-rc2'
+      - main
   workflow_dispatch:
 
 permissions:
