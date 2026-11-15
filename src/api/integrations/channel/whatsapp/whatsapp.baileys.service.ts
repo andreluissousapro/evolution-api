@@ -3716,7 +3716,10 @@ export class BaileysStartupService extends ChannelStartupService {
                 buttonParamsJson: this.toJSONString(data.buttons[0]),
               },
             ],
-            // Sem messageParamsJson: a mensagem Pix do WhatsApp nativo não leva esse campo.
+            messageParamsJson: JSON.stringify({
+              from: 'api',
+              templateId: v4(),
+            }),
           },
         },
       };
