@@ -16,24 +16,6 @@ export function buildInteractiveBizNode(): BinaryNode {
 }
 
 /**
- * Biz node da mensagem Pix (`payment_info`). O `mixed` dos demais botões não é o que o
- * WhatsApp usa para pagamento, e o app do celular não desenhava a mensagem.
- */
-export function buildPixBizNode(): BinaryNode {
-  return {
-    tag: 'biz',
-    attrs: {},
-    content: [
-      {
-        tag: 'interactive',
-        attrs: { type: 'native_flow', v: '1' },
-        content: [{ tag: 'native_flow', attrs: { v: '2', name: 'payment_info' } }],
-      },
-    ],
-  };
-}
-
-/**
  * Biz node específico para `listMessage` legado.
  * Necessário para o WhatsApp Web/Desktop renderizar a lista — o moderno
  * (`interactiveMessage` + `single_select`) não é renderizado no Web.
