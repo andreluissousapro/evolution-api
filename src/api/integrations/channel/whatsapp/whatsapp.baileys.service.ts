@@ -3617,31 +3617,42 @@ export class BaileysStartupService extends ChannelStartupService {
       reply: () => toString({ display_text: button.displayText, id: button.id }),
       copy: () => toString({ display_text: button.displayText, copy_code: button.copyCode }),
       url: () => toString({ display_text: button.displayText, url: button.url, merchant_url: button.url }),
+      // Mesma estrutura que o WhatsApp do celular manda ao enviar uma chave Pix (capturada de uma
+      // mensagem real). O formato antigo (order.status 'pending', order_type 'ORDER', offset 100)
+      // aparecia só no WhatsApp Web; o app do celular não desenhava a mensagem.
       pix: () =>
         toString({
           currency: button.currency,
-          total_amount: { value: 0, offset: 100 },
           reference_id: this.generateRandomId(),
-          type: 'physical-goods',
+          total_amount: { value: 0, offset: 1 },
+          additional_note: '',
           order: {
-            status: 'pending',
-            subtotal: { value: 0, offset: 100 },
-            order_type: 'ORDER',
+            status: 'payment_requested',
+            subtotal: { value: 0, offset: 1 },
+            order_type: 'ORDER_WITHOUT_AMOUNT',
             items: [
-              { name: '', amount: { value: 0, offset: 100 }, quantity: 0, sale_amount: { value: 0, offset: 100 } },
+              {
+                name: '',
+                retailer_id: `custom-item-${Math.floor(Date.now() / 1000)}`,
+                amount: { value: 0, offset: 1 },
+                quantity: 0,
+              },
             ],
           },
           payment_settings: [
             {
-              type: 'pix_static_code',
               pix_static_code: {
-                merchant_name: button.name,
                 key: button.key,
                 key_type: this.mapKeyType.get(button.keyType),
+                merchant_name: button.name,
+                flow_type: 'NATIVE',
               },
+              type: 'pix_static_code',
             },
+            { cards: { enabled: false }, type: 'cards' },
           ],
-          share_payment_status: false,
+          type: 'physical-goods',
+          referral: 'quick_reply',
         }),
     };
 
