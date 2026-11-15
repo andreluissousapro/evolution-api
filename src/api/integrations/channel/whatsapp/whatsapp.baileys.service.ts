@@ -3774,11 +3774,12 @@ export class BaileysStartupService extends ChannelStartupService {
       interactiveMessage: {
         body: {
           text: (() => {
-            let text = `*${data.title}*`;
-            if (data?.description) {
-              text += `\n\n${data.description}`;
-            }
-            return text;
+            // Título só em negrito quando existe: vazio saía como "**" no topo da mensagem.
+            // Sem título, a descrição vai como texto normal; sem os dois, o corpo fica vazio
+            // e a mensagem leva só os botões.
+            const title = data.title?.trim() ? `*${data.title}*` : '';
+            if (!data?.description) return title;
+            return title ? `${title}\n\n${data.description}` : data.description;
           })(),
         },
         footer: data?.footer ? { text: data.footer } : undefined,
